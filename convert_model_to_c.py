@@ -19,7 +19,7 @@ def print_help():
 
 
 if __name__ == '__main__':
-    model_path = 'fall.model'
+    model_path = 'test.model'
     if len(sys.argv) == 1:
         pass
     elif len(sys.argv) == 2:
