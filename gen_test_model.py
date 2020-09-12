@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import libsvm.svmutil as svm
 
-total_samples = 50
+total_samples = 4
 
 
 def decision_func(x1, x2):
@@ -41,5 +41,9 @@ if __name__ == "__main__":
 
     # test
     y0 = [-1]
-    x0 = [{1: 0.1, 2: 0.1}]
+    x0 = [{1: 1, 2: 0}]
     p_label, p_acc, p_val = svm.svm_predict(y0, x0, model)
+    print('p_label = ', p_label)
+    print('p_acc = ', p_acc)
+    print('p_val = ', p_val)
+

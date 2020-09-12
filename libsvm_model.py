@@ -38,7 +38,8 @@ class Model:
         self.var_map = {"@{label}": "",
                         "@{coefs}": "",
                         "@{SVs}": "",
-                        "@{svm_type}": "linear",
+                        "@{svm_type}": "c_svc",
+                        "@{kernel_type}": "KERNEL_LINEAR",
                         "@{degree}": 3,
                         "@{gamma}": 1,
                         "@{coef0}": 0,
@@ -65,7 +66,8 @@ class Model:
 
         for SV in self.SVs:
             self.var_map["@{SVs}"] += str(SV).lstrip('[').rstrip(']') + ',\n'
-        self.var_map["@{svm_type}"] = 'linear' if self.svm_type == 'linear' else 'polynomial'
+        self.var_map["@{svm_type}"] = self.svm_type
+        self.var_map["@{kernel_type}"] = 'KERNEL_LINEAR' if self.kernel_type == 'linear' else 'KERNEL_POLYNOMIAL'
         self.var_map["@{degree}"] = str(self.degree)
         self.var_map["@{gamma}"] = str(self.gamma)
         self.var_map["@{coef0}"] = str(self.coef0)

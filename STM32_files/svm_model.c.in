@@ -44,7 +44,7 @@ float polynomial_kernel(const float *xi, const float *x, const Model *model)
 
 void init_svm_params(Model *svm_model)
 {
-    svm_model->svm_type = @{svm_type};
+    svm_model->kernel_type = @{kernel_type};
     svm_model->degree   = @{degree};
     svm_model->gamma    = @{gamma};
     svm_model->coef0    = @{coef0};
@@ -72,7 +72,7 @@ float predict(const Model *svm_model, const float* x, int len)
         // len == feature num == vector dim
         return 0;
     }
-    switch (svm_model->svm_type)
+    switch (svm_model->kernel_type)
     {
     case KERNEL_LINEAR:
         kernel = linear_kernel;
@@ -87,7 +87,7 @@ float predict(const Model *svm_model, const float* x, int len)
     for (i = 0; i < svm_model->total_sv; i++)
     {
         float* xi = svm_model->SVs + i * svm_model->vec_dim;
-        sum += svm_model->coefs[i]*kernel(xi, x, svm_model)
+        sum += svm_model->coefs[i]*kernel(xi, x, svm_model);
     }
 
     return sum-svm_model->rho;

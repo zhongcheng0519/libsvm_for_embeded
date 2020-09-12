@@ -9,7 +9,7 @@ typedef enum {
 } KernelType;
 
 typedef struct {
-    KernelType svm_type;
+    KernelType kernel_type;
     //-- for polynomial kernel -->
     uint8_t degree;
     float gamma;
