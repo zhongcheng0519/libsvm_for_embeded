@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import libsvm.svmutil as svm
 
-total_samples = 4
+total_samples = 30
 
 
 def decision_func(x1, x2):
@@ -35,15 +35,16 @@ if __name__ == "__main__":
     y = list(label)
     x = svm_data_format(x1, x2)
     prob = svm.svm_problem(y, x)
-    param = svm.svm_parameter('-t 0 -c 1')
+    #  param = svm.svm_parameter('-t 0 -c 1')
+    param = svm.svm_parameter('-t 1 -d 2')
     model = svm.svm_train(prob, param)
     svm.svm_save_model('test.model', model)
 
     # test
-    y0 = [-1]
-    x0 = [{1: 1, 2: 0}]
-    p_label, p_acc, p_val = svm.svm_predict(y0, x0, model)
-    print('p_label = ', p_label)
-    print('p_acc = ', p_acc)
-    print('p_val = ', p_val)
+    #  y0 = [-1]
+    #  x0 = [{1: 1, 2: 0}]
+    #  p_label, p_acc, p_val = svm.svm_predict(y0, x0, model)
+    #  print('p_label = ', p_label)
+    #  print('p_acc = ', p_acc)
+    #  print('p_val = ', p_val)
 
