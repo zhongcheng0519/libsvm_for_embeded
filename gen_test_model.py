@@ -36,7 +36,8 @@ if __name__ == "__main__":
     x = svm_data_format(x1, x2)
     prob = svm.svm_problem(y, x)
     #  param = svm.svm_parameter('-t 0 -c 1')
-    param = svm.svm_parameter('-t 1 -d 2')
+    #  param = svm.svm_parameter('-t 1 -d 2')
+    param = svm.svm_parameter('-t 2')
     model = svm.svm_train(prob, param)
     svm.svm_save_model('test.model', model)
 
