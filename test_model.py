@@ -12,9 +12,10 @@ if __name__ == "__main__":
     for line in sys.stdin:
         line = line.strip()
         x = line.split(' ')
-        if len(x) != 2:
+        try:
+            vx = [{i: float(x[i]) for i in range(len(x))}]
+        except:
             continue
-        vx = [{1: float(x[0]), 2: float(x[1])}]
         print('vx = ', vx)
         p_label, p_acc, p_val = svm.svm_predict([], vx, model, '-q')
         print('p_val = ', p_val)
