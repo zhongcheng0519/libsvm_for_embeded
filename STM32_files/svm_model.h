@@ -4,8 +4,10 @@
 #include <stdint.h>
 
 typedef enum {
-    KERNEL_LINEAR = 0,
-    KERNEL_POLYNOMIAL
+    KERNEL_UNKNOWN = 0,
+    KERNEL_LINEAR, 
+    KERNEL_POLYNOMIAL,
+    KERNEL_RBF
 } KernelType;
 
 typedef struct {

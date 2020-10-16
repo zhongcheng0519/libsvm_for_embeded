@@ -1,4 +1,5 @@
 #include "svm_model.h"
+#include "math.h"
 
 typedef float (*KernelHandle)(const float *xi, const float *x, const Model *model);
 
@@ -42,6 +43,23 @@ float polynomial_kernel(const float *xi, const float *x, const Model *model)
     return res * res;
 }
 
+float rbf_kernel(const float *xi, const float *x, const Model *model)
+{
+    float sum = 0.f;
+    int i = 0;
+    int len = model->vec_dim;
+    float res = 0;
+    float temp = 0;
+    for (i = 0; i < len; i++)
+    {
+        temp = xi[i] - x[i];
+        sum += temp*temp;
+    }
+    
+    res = expf(-model->gamma*sum);
+    return res;
+}
+
 void init_svm_params(Model *svm_model)
 {
     svm_model->kernel_type = @{kernel_type};
@@ -79,6 +97,9 @@ float predict(const Model *svm_model, const float* x, int len)
         break;
     case KERNEL_POLYNOMIAL:
         kernel = polynomial_kernel;
+        break;
+    case KERNEL_RBF:
+        kernel = rbf_kernel;
         break;
     default:
         return 0;

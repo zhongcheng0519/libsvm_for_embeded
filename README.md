@@ -49,3 +49,7 @@ cat ../data.txt | ./svm_test
 
 the output will tell whether the converted program is right or not.
 
+## Implementation reference
+
+> [LIBSVM: A Library for Support Vector Machines](https://www.csie.ntu.edu.tw/~cjlin/papers/libsvm.pdf)
+
