@@ -1,9 +1,9 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import matplotlib.pyplot as plt
 import numpy as np
 import libsvm.svmutil as svm
 
-total_samples = 30
+total_samples = 10
 
 
 def decision_func(x1, x2):

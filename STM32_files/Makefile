@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-I.
+CFLAGS=-I. -g
 DEPS = svm_model.h
 OBJ = main.o svm_model.o
 TARGET = svm_test

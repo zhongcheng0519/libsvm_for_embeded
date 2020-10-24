@@ -1,7 +1,7 @@
 #include "svm_model.h"
 #include "math.h"
 
-typedef float (*KernelHandle)(const float *xi, const float *x, const Model *model);
+typedef double (*KernelHandle)(const float *xi, const float *x, const Model *model);
 
 static int32_t g_label[] = {
 @{label}
@@ -15,9 +15,9 @@ static float g_SVs[] = {
 @{SVs}
 };
 
-float linear_kernel(const float *xi, const float *x, const Model *model)
+double linear_kernel(const float *xi, const float *x, const Model *model)
 {
-    float sum = 0.f;
+    double sum = 0.f;
     int i = 0;
     int len = model->vec_dim;
     for (i = 0; i < len; i++)
@@ -27,12 +27,12 @@ float linear_kernel(const float *xi, const float *x, const Model *model)
     return sum;
 }
 
-float polynomial_kernel(const float *xi, const float *x, const Model *model)
+double polynomial_kernel(const float *xi, const float *x, const Model *model)
 {
-    float sum = 0.f;
+    double sum = 0.f;
     int i = 0;
     int len = model->vec_dim;
-    float res = 0;
+    double res = 0;
 
     for (i = 0; i < len; i++)
     {
@@ -43,20 +43,20 @@ float polynomial_kernel(const float *xi, const float *x, const Model *model)
     return res * res;
 }
 
-float rbf_kernel(const float *xi, const float *x, const Model *model)
+double rbf_kernel(const float *xi, const float *x, const Model *model)
 {
-    float sum = 0.f;
+    double sum = 0.f;
     int i = 0;
     int len = model->vec_dim;
-    float res = 0;
-    float temp = 0;
+    double res = 0.;
+    double temp = 0.;
     for (i = 0; i < len; i++)
     {
         temp = xi[i] - x[i];
         sum += temp*temp;
     }
     
-    res = expf(-model->gamma*sum);
+    res = exp(-model->gamma*sum);
     return res;
 }
 
@@ -80,10 +80,10 @@ void init_svm_params(Model *svm_model)
 }
 
 
-float predict(const Model *svm_model, const float* x, int len)
+double predict(const Model *svm_model, const float* x, int len)
 {
     int i = 0;
-    float sum = 0.f;
+    double sum = 0.f;
     KernelHandle kernel;
     if (len != svm_model->vec_dim)
     {
@@ -108,7 +108,7 @@ float predict(const Model *svm_model, const float* x, int len)
     for (i = 0; i < svm_model->total_sv; i++)
     {
         float* xi = svm_model->SVs + i * svm_model->vec_dim;
-        sum += svm_model->coefs[i]*kernel(xi, x, svm_model);
+        sum += svm_model->coefs[i] * kernel(xi, x, svm_model);
     }
 
     return sum-svm_model->rho;

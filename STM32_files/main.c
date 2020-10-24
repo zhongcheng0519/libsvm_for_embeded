@@ -3,27 +3,38 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define FEATURE_SIZE 8
 
 int main()
 {
     Model svm_model;
-    float test_x[] = {1.f, 0.f};
-    float result = 0.0;
+    float test_x[FEATURE_SIZE];
+    double result = 0.0;
 
     char buffer[256];
+    int i;
     
     init_svm_params(&svm_model);
     
     while (fgets(buffer, sizeof(buffer), stdin) != NULL)
     {
-        int res;
-        res = sscanf(buffer, "%f %f", &test_x[0], &test_x[1]);
-        if (res > 0)
+        char* psub;
+        if (strlen(buffer) < 3)
+            break;
+        test_x[0] = atof(strtok(buffer, " "));
+        for (i = 1; i < FEATURE_SIZE; i++)
         {
-            printf("x1 = %f, x2 = %f\n", test_x[0], test_x[1]);
-            result = predict(&svm_model, test_x, 2);
-            printf("result = %f\n", result);
+            test_x[i] = atof(strtok(NULL, " "));
         }
+
+        printf("(");
+        for (i = 0; i < FEATURE_SIZE; i++)
+        {
+            printf("%f,", test_x[i]);
+        }
+        printf(")\n");
+        result = predict(&svm_model, test_x, FEATURE_SIZE);
+        printf("result = %f\n", result);
     }
 
     return 0;

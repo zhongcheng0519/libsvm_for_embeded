@@ -32,6 +32,6 @@ typedef struct {
 
 void init_svm_params(Model *svm_model);
 
-float predict(const Model *svm_model, const float* x, int len);
+double predict(const Model *svm_model, const float* x, int len);
 
 #endif

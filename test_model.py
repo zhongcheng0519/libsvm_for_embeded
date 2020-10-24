@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import libsvm.svmutil as svm
 import sys
 
@@ -13,7 +13,7 @@ if __name__ == "__main__":
         line = line.strip()
         x = line.split(' ')
         try:
-            vx = [{i: float(x[i]) for i in range(len(x))}]
+            vx = [{i+1: float(x[i]) for i in range(len(x))}]
         except:
             continue
         print('vx = ', vx)
