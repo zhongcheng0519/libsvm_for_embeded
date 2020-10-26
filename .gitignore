@@ -1,6 +1,7 @@
 .idea/*
 __pycache__/*
 STM32_files/svm_model.c
+STM32_files/svm_model.h
 *.o
 STM32_files/svm_test
 fall*.model
