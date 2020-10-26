@@ -8,9 +8,13 @@ def convert_model(model_path):
     model = Model()
     model.load(model_path)
     if model.fprint_c('STM32_files/svm_model.c.in'):
-        print('Successfully converted!')
+        print('Converting succeeded! {svm_model.c}')
     else:
-        print('Convert failed!')
+        print('Converting failed! {svm_model.c}')
+    if model.fprint_c('STM32_files/svm_model.h.in'):
+        print('Converting succeeded! {svm_model.h}')
+    else:
+        print('Converting failed! {svm_model.h}')
 
 
 def print_help():

@@ -2,7 +2,7 @@
 #define __LIBSVM_MODEL_H__
 
 #include <stdint.h>
-#define FEATURE_SIZE 8
+#define FEATURE_SIZE @{vec_dim}
 
 typedef enum {
     KERNEL_UNKNOWN = 0,

@@ -4,3 +4,4 @@ STM32_files/svm_model.c
 *.o
 STM32_files/svm_test
 fall*.model
+test.txt

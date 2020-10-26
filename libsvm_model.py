@@ -132,7 +132,7 @@ class Model:
         if not os.path.exists(c_file_in):
             print('%s does not exist.' % c_file_in)
             return False
-        if name_ext[-1] == '.in' and os.path.splitext(name_ext[0])[-1] == '.c':
+        if name_ext[-1] == '.in' and os.path.splitext(name_ext[0])[-1] in {'.c', '.h'}:
             src_name = c_file_in
             dst_name = name_ext[0]
             # find @{varname} in src file, replace them, and generate new file
@@ -154,5 +154,5 @@ class Model:
 
             return True
         else:
-            print('filename.c.in is expected')
+            print('filename.[c/h].in is expected')
             return False

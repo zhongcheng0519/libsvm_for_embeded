@@ -3,8 +3,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define FEATURE_SIZE 8
-
 int main()
 {
     Model svm_model;
