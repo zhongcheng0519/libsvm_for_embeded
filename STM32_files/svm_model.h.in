@@ -35,4 +35,7 @@ void init_svm_params(Model *svm_model);
 
 double predict(const Model *svm_model, const float* x, int len);
 
+double predict_probability(const Model *svm_model, const float* x, int len);
+
+
 #endif

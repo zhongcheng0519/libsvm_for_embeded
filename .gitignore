@@ -6,3 +6,4 @@ STM32_files/svm_model.h
 STM32_files/svm_test
 fall*.model
 test.txt
+LIBSVM*.model
