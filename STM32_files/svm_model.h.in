@@ -3,6 +3,8 @@
 
 #include <stdint.h>
 #define FEATURE_SIZE @{vec_dim}
+#define NR_CLASS @{nr_class}
+#define TOTAL_SV @{total_sv}
 #define NR_CLASSIFER(nc) (nc*(nc-1)/2)
 
 typedef enum {
@@ -26,7 +28,7 @@ typedef struct {
     float* probA;        /* pariwise probability information */
     float* probB;
 
-    float** coefs;       /* coefficients for SVs in decision functions (sv_coef[k-1][l]) */
+    float (*coefs)[TOTAL_SV];  /* coefficients for SVs in decision functions (sv_coef[k-1][l]) */
     uint32_t vec_dim;
     float* SVs;          /* SVs (SV[l]) */
     int32_t* nr_sv;      /* number of SVs for each class (nSV[k]) */
@@ -38,6 +40,8 @@ void init_svm_params(Model *svm_model);
 double predict(const Model *svm_model, const float* x, int len);
 
 double predict_probability(const Model *svm_model, const float* x, int len);
+
+int32_t multi_predict_probability(const Model *svm_model, const float* x, int len, double* score);
 
 
 #endif
