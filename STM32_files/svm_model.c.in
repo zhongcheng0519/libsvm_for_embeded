@@ -96,6 +96,7 @@ void init_svm_params(Model *svm_model)
     svm_model->gamma    = @{gamma};
     svm_model->coef0    = @{coef0};
     svm_model->nr_class = NR_CLASS;
+    svm_model->nr_sv    = g_nr_sv;
     svm_model->total_sv = TOTAL_SV;
     svm_model->rhos     = g_rhos;
     svm_model->label    = g_label;

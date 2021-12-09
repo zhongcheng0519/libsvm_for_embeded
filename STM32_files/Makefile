@@ -1,17 +1,20 @@
 CC=gcc
 CFLAGS=-I. -g
 DEPS = svm_model.h
-OBJ = main.o svm_model.o
-TARGET = svm_test
+PREDICT_OBJ = main.o svm_model.o
+MULTI_OBJ = main_multi.o svm_model.o
+
 LIBS = -lm
+.PHONY: clean svm_test multi_test
 
 %.o: %.c $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS)
 
-$(TARGET): $(OBJ)
+svm_test: $(PREDICT_OBJ)
 	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
 
-.PHONY: clean
+multi_test: $(MULTI_OBJ)
+	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
 
 clean:
-	rm -rf $(OBJ) $(TARGET)
+	rm -rf $(PREDICT_OBJ) $(MULTI_OBJ) svm_test multi_test
