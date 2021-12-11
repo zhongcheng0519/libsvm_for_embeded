@@ -25,7 +25,7 @@ Firstly, run `gen_test_model.py` to get `test.model` file.
 ./gen_test_model.py
 ```
 
-Secondly, execute `convert_model_to_.py` to generate newest `svm_model.c` file
+Secondly, execute `convert_model_to_c.py` to generate newest `svm_model.c` file
 
 ```
 ./convert_model_to_c.py
