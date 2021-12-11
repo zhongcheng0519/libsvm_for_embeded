@@ -33,7 +33,7 @@ int main()
         }
         printf(")\n");
 
-        label = multi_predict_probability(&svm_model, test_x, FEATURE_SIZE, score);
+        label = multi_predict_probability(&svm_model, test_x, FEATURE_SIZE, score, NR_CLASS);
         printf("label = %d\n", label);
         printf("scores = [");
         for (i = 0; i < NR_CLASS; i++)

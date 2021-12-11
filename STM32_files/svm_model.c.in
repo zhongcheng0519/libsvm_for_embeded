@@ -285,7 +285,7 @@ static void multiclass_probability(int k, double (*r)[NR_CLASS], double *p)
     }
 }
 
-int32_t multi_predict_probability(const Model *svm_model, const float* x, int len, double* score)
+int32_t multi_predict_probability(const Model *svm_model, const float* x, int len, float* scores_buf, int scores_buf_len)
 {
     double dec_values[NR_CLASSIFER(NR_CLASS)];
     int32_t res = svm_predict_values(svm_model, x, dec_values);
@@ -304,11 +304,18 @@ int32_t multi_predict_probability(const Model *svm_model, const float* x, int le
             k++;
         }
     }
-	multiclass_probability(NR_CLASS, pairwise_prob, score);
+    double scores[NR_CLASS];
+	multiclass_probability(NR_CLASS, pairwise_prob, scores);
 
     int prob_max_idx = 0;
     for (i = 1; i < NR_CLASS; i++)
-        if(score[i] > score[prob_max_idx])
+        if(scores[i] > scores[prob_max_idx])
             prob_max_idx = i;
+    if (scores_buf_len < NR_CLASS)
+    {
+        return -1;
+    }
+    for (i = 0; i < NR_CLASS; i++)
+        scores_buf[i] = (float)scores[i];
     return svm_model->label[prob_max_idx];
 }

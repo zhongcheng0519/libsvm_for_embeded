@@ -35,13 +35,30 @@ typedef struct {
                          /* nSV[0] + nSV[1] + ... + nSV[k-1] = l */
 } Model;
 
+/** 
+ *  init svm params, must be invoked before predict
+ */
 void init_svm_params(Model *svm_model);
 
+/**
+ * two-class only
+ */
 double predict(const Model *svm_model, const float* x, int len);
 
+/**
+ * two-class only
+ */
 double predict_probability(const Model *svm_model, const float* x, int len);
 
-int32_t multi_predict_probability(const Model *svm_model, const float* x, int len, double* score);
+/**
+ * predict multi classes
+ * @param[in]  svm_model  SVM model
+ * @param[in]  x          input x feature
+ * @param[in]  len        x length
+ * @param[out] scores_buf probability of each score
+ * @param[in]  scores_buf_len  length of scores buf
+ */
+int32_t multi_predict_probability(const Model *svm_model, const float* x, int len, float* scores_buf, int scores_buf_len);
 
 
 #endif
