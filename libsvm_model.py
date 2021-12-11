@@ -1,5 +1,6 @@
 import os
 import re
+import numpy as np
 
 
 class Model:
@@ -19,15 +20,15 @@ class Model:
         # total support vector number
         self.total_sv = 2
         # -b in decision function
-        self.rho = 1
+        self.rho = list()
         # label
         self.label = [1, 0]
         # probA
-        self.probA = -1
+        self.probA = list()
         # probB
-        self.probB = 1
+        self.probB = list()
         # support vector number for each class
-        self.nr_sv = [38, 186]
+        self.nr_sv = list()
 
         # support vector coefs
         self.coefs = []
@@ -52,17 +53,19 @@ class Model:
 
     def insert_newline(self, array, row_num):
         new_str = ''
-        for i, value in enumerate(array):
-            new_str += (value+', ')
-            if i % row_num == row_num - 1:
-                new_str += '\n'
+        for row in array:
+            new_str += '{\n'
+            array_row = list(row)
+            for c, value in enumerate(array_row):
+                new_str += "{:f}f,".format(value)
+                if c % row_num == row_num - 1:
+                    new_str += '\n'
+            new_str += '\n}, \n'
         return new_str
 
     def refresh_var_map(self):
         self.var_map["@{label}"] = str(self.label).lstrip('[').rstrip(']')
-        coefs_temp = str(self.coefs).lstrip('[').rstrip(']')
-        coefs_array = coefs_temp.split(', ')
-        self.var_map["@{coefs}"] = self.insert_newline(coefs_array, 10)
+        self.var_map["@{coefs}"] = self.insert_newline(self.coefs, 10)
 
         for SV in self.SVs:
             self.var_map["@{SVs}"] += str(SV).lstrip('[').rstrip(']') + ',\n'
@@ -74,10 +77,11 @@ class Model:
         self.var_map["@{gamma}"] = str(self.gamma)
         self.var_map["@{coef0}"] = str(self.coef0)
         self.var_map["@{nr_class}"] = str(self.nr_class)
+        self.var_map["@{nr_sv}"] = str(self.nr_sv).lstrip('[').rstrip(']')
         self.var_map["@{total_sv}"] = str(self.total_sv)
-        self.var_map["@{rho}"] = str(self.rho)
-        self.var_map["@{probA}"] = str(self.probA)
-        self.var_map["@{probB}"] = str(self.probB)
+        self.var_map["@{rho}"] = ','.join(["{:f}f".format(x) for x in self.rho])
+        self.var_map["@{probA}"] = ','.join(["{:f}f".format(x) for x in self.probA])
+        self.var_map["@{probB}"] = ','.join(["{:f}f".format(x) for x in self.probB])
         self.var_map["@{vec_dim}"] = str(len(self.SVs[0]))
 
     def load(self, model_path):
@@ -107,22 +111,27 @@ class Model:
             elif key == 'total_sv':
                 self.total_sv = int(value[0])
             elif key == 'rho':
-                self.rho = float(value[0])
+                self.rho = [float(x) for x in value]
             elif key == 'label':
                 self.label = [int(x) for x in value]
             elif key == 'probA':
-                self.probA = float(value[0])
+                self.probA = [float(x) for x in value]
             elif key == 'probB':
-                self.probB = float(value[0])
+                self.probB = [float(x) for x in value]
             elif key == 'nr_sv':
                 self.nr_sv = [int(x) for x in value]
             else:
                 print('Unrecognized param')
 
-        for svl in sv_lines:
+        k = self.nr_class
+        self.coefs = np.zeros((k-1, self.total_sv))
+        if self.total_sv != len(sv_lines):
+            raise ValueError("total_sv != len(sv_lines)")
+        for li, svl in enumerate(sv_lines):
             svs =svl.split(' ')
-            self.coefs.append(float(svs[0]))
-            sv = [float(x.split(':')[-1]) for x in svs[1:]]
+            for ki in range(k-1):
+                self.coefs[ki, li] = svs[ki]
+            sv = [float(x.split(':')[-1]) for x in svs[k-1:]]
             self.SVs.append(sv)
 
         self.refresh_var_map()
