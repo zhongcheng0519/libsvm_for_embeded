@@ -7,7 +7,7 @@ int main()
 {
     Model svm_model;
     float test_x[FEATURE_SIZE] = {0.007375,0.049970,-1.372099,-0.095147,0.805052,0.529560,0.597682,0.049957,-0.394064,-0.035558};
-    double score[NR_CLASS];
+    float score[NR_CLASS];
     int label;
 
     char buffer[256];

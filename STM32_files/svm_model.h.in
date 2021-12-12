@@ -43,12 +43,12 @@ void init_svm_params(Model *svm_model);
 /**
  * two-class only
  */
-double predict(const Model *svm_model, const float* x, int len);
+float predict(const Model *svm_model, const float* x, int len);
 
 /**
  * two-class only
  */
-double predict_probability(const Model *svm_model, const float* x, int len);
+float predict_probability(const Model *svm_model, const float* x, int len);
 
 /**
  * predict multi classes
