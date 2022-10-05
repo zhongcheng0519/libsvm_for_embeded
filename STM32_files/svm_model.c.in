@@ -163,6 +163,12 @@ static int32_t svm_predict_values(const Model *svm_model, const float *x, float*
     case KERNEL_LINEAR:
         kernel = linear_kernel;
         break;
+    case KERNEL_POLYNOMIAL:
+        kernel = polynomial_kernel;
+        break;
+    case KERNEL_RBF:
+        kernel = rbf_kernel;
+        break;
     default:
         return -1;
     }
@@ -283,6 +289,12 @@ static void multiclass_probability(int k, float (*r)[NR_CLASS], float *p)
         printf("Exceeds max_iter in multiclass_prob\n");
 #endif
     }
+}
+
+int32_t multi_predict(const Model* svm_model, const float* x, int len) {
+    float dec_values[NR_CLASSIFER(NR_CLASS)];
+    int label = svm_predict_values(svm_model, x, dec_values);
+    return label;
 }
 
 int32_t multi_predict_probability(const Model *svm_model, const float* x, int len, float* scores_buf, int scores_buf_len)

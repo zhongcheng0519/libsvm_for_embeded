@@ -8,3 +8,4 @@ fall*.model
 test.txt
 LIBSVM*.model
 STM32_files/.vscode/*
+libsvm.model

@@ -51,6 +51,16 @@ float predict(const Model *svm_model, const float* x, int len);
 float predict_probability(const Model *svm_model, const float* x, int len);
 
 /**
+ * @brief predict multiclasses
+ * 
+ * @param svm_model   SVM model
+ * @param x           input x feature
+ * @param len         x length
+ * @return int32_t    return label
+ */
+int32_t multi_predict(const Model* svm_model, const float* x, int len);
+
+/**
  * predict multi classes
  * @param[in]  svm_model  SVM model
  * @param[in]  x          input x feature
