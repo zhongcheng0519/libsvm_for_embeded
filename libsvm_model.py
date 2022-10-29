@@ -4,7 +4,8 @@ import numpy as np
 
 
 class Model:
-    def __init__(self):
+    def __init__(self, prefix: str = ""):
+        self.prefix = prefix
         # only c_svc is supported
         self.svm_type = 'c_svc'
         # linear or polynomial is supported
@@ -36,7 +37,8 @@ class Model:
         self.SVs = []
 
         # var replacement
-        self.var_map = {"@{label}": "",
+        self.var_map = {"@{prefix}": prefix,
+                        "@{label}": "",
                         "@{coefs}": "",
                         "@{SVs}": "",
                         "@{svm_type}": "c_svc",
@@ -143,7 +145,9 @@ class Model:
             return False
         if name_ext[-1] == '.in' and os.path.splitext(name_ext[0])[-1] in {'.c', '.h'}:
             src_name = c_file_in
-            dst_name = name_ext[0]
+            path_split = name_ext[0].split('/')
+            path_split[-1] = self.prefix + path_split[-1]
+            dst_name = '/'.join(path_split)
             # find @{varname} in src file, replace them, and generate new file
             with open(src_name, 'rt') as f:
                 lines = f.readlines()

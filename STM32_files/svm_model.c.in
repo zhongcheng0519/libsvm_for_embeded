@@ -1,10 +1,15 @@
-#include "svm_model.h"
+#include "@{prefix}svm_model.h"
 #include "math.h"
 
 #define MAX(x, y) ((x)>(y))?(x):(y)
 #define MIN(x, y) ((x)<(y))?(x):(y)
 
-typedef float (*KernelHandle)(const float *xi, const float *x, const Model *model);
+#define KERNEL_UNKNOWN 0
+#define KERNEL_LINEAR  1
+#define KERNEL_POLYNOMIAL 2
+#define KERNEL_RBF 3
+
+typedef float (*KernelHandle)(const float *xi, const float *x, const @{prefix}Model *model);
 
 static int32_t g_label[NR_CLASS] = {
 @{label}
@@ -44,7 +49,7 @@ static float sigmoid_predict(float decision_value, float A, float B)
 		return 1.0/(1+expf(fApB)) ;
 }
 
-float linear_kernel(const float *xi, const float *x, const Model *model)
+static float linear_kernel(const float *xi, const float *x, const @{prefix}Model *model)
 {
     float sum = 0.f;
     int i = 0;
@@ -56,7 +61,7 @@ float linear_kernel(const float *xi, const float *x, const Model *model)
     return sum;
 }
 
-float polynomial_kernel(const float *xi, const float *x, const Model *model)
+static float polynomial_kernel(const float *xi, const float *x, const @{prefix}Model *model)
 {
     float sum = 0.f;
     int i = 0;
@@ -72,7 +77,7 @@ float polynomial_kernel(const float *xi, const float *x, const Model *model)
     return res * res;
 }
 
-float rbf_kernel(const float *xi, const float *x, const Model *model)
+static float rbf_kernel(const float *xi, const float *x, const @{prefix}Model *model)
 {
     float sum = 0.f;
     int i = 0;
@@ -89,7 +94,7 @@ float rbf_kernel(const float *xi, const float *x, const Model *model)
     return res;
 }
 
-void init_svm_params(Model *svm_model)
+void @{prefix}init_svm_params(@{prefix}Model *svm_model)
 {
     svm_model->kernel_type = @{kernel_type};
     svm_model->degree   = @{degree};
@@ -110,7 +115,7 @@ void init_svm_params(Model *svm_model)
 }
 
 
-float predict(const Model *svm_model, const float* x, int len)
+float @{prefix}predict(const @{prefix}Model *svm_model, const float* x, int len)
 {
     int i = 0;
     float sum = 0.f;
@@ -144,13 +149,13 @@ float predict(const Model *svm_model, const float* x, int len)
     return sum-svm_model->rhos[0];
 }
 
-float predict_probability(const Model *svm_model, const float* x, int len)
+float @{prefix}predict_probability(const @{prefix}Model *svm_model, const float* x, int len)
 {
-    float score = predict(svm_model, x, len);
+    float score = @{prefix}predict(svm_model, x, len);
     return sigmoid_predict(score, svm_model->probA[0], svm_model->probB[0]);
 }
 
-static int32_t svm_predict_values(const Model *svm_model, const float *x, float* dec_values)
+static int32_t svm_predict_values(const @{prefix}Model *svm_model, const float *x, float* dec_values)
 {
     int i = 0;
     int j = 0;
@@ -291,13 +296,13 @@ static void multiclass_probability(int k, float (*r)[NR_CLASS], float *p)
     }
 }
 
-int32_t multi_predict(const Model* svm_model, const float* x, int len) {
+int32_t @{prefix}multi_predict(const @{prefix}Model* svm_model, const float* x, int len) {
     float dec_values[NR_CLASSIFER(NR_CLASS)];
     int label = svm_predict_values(svm_model, x, dec_values);
     return label;
 }
 
-int32_t multi_predict_probability(const Model *svm_model, const float* x, int len, float* scores_buf, int scores_buf_len)
+int32_t @{prefix}multi_predict_probability(const @{prefix}Model *svm_model, const float* x, int len, float* scores_buf, int scores_buf_len)
 {
     float dec_values[NR_CLASSIFER(NR_CLASS)];
     int32_t res = svm_predict_values(svm_model, x, dec_values);
