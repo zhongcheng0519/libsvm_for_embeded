@@ -30,6 +30,7 @@ if __name__ == '__main__':
     elif len(sys.argv) == 2:
         model_path = sys.argv[1]
     elif len(sys.argv) == 3:
+        model_path = sys.argv[1]
         prefix = sys.argv[2]
     else:
         print_help()
