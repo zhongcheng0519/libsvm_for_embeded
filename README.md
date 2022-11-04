@@ -1,16 +1,18 @@
 # libsvm for embeded (forward only)
 
-[libsvm](https://www.csie.ntu.edu.tw/~cjlin/libsvm/) is the famous SVM library, which provides interfaces to almost all the programming languages. However, it seems friendly only for the environments with file systems. Currently, I want to apply libsvm result, which is named as `*.model` to STM32, and I don't want to port FATFS to it. So the easy way is maybe converting `*.model` file to `svm_model.h` and `svm_model.c` which can be compiled to STM32.
+[libsvm](https://www.csie.ntu.edu.tw/~cjlin/libsvm/) is the famous SVM library, which provides interfaces for almost all programming languages. However, it seems not friendly for embeded system. In my application, I trained data on my Linux machine for a model file, and use it on STM32 board, which do not have a file system. So the easiest way maybe is converting the generated model file to c files like `svm_model.h` and `svm_model.c` which can be compiled to any embeded system.
 
 ## Usage
 
 `convert_model_to_c.py` reads an model file and replace variables to `STM32_files/svm_model.c.in` and generate `STM32_files/svm_model.c` as output.
 
 ```
-./convert_model_to_c.py [model_path]
+./convert_model_to_c.py [model_path] [prefix]
 ```
 
-`svm_model.h` and `svm_model.c` can then be utilized in STM32 project
+`[prefix]svm_model.h` and `[prefix]svm_model.c` can then be utilized in STM32 project.
+
+`prefix` is used to distinguish models as I used two SVM models in my application. It can also be leave alone, thus no prefix will be added.
 
 `STM32_files/main.c` tests the two files and also gives the demonstration of invoking functions in `svm_model.c`
 
