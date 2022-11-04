@@ -1,10 +1,15 @@
-#include "svm_model.h"
+#include "@{prefix}svm_model.h"
 #include "math.h"
 
 #define MAX(x, y) ((x)>(y))?(x):(y)
 #define MIN(x, y) ((x)<(y))?(x):(y)
 
-typedef double (*KernelHandle)(const float *xi, const float *x, const Model *model);
+#define KERNEL_UNKNOWN 0
+#define KERNEL_LINEAR  1
+#define KERNEL_POLYNOMIAL 2
+#define KERNEL_RBF 3
+
+typedef float (*KernelHandle)(const float *xi, const float *x, const @{prefix}Model *model);
 
 static int32_t g_label[NR_CLASS] = {
 @{label}
@@ -34,19 +39,19 @@ static float g_probB[NR_CLASSIFER(NR_CLASS)] = {
 @{probB}
 };
 
-static double sigmoid_predict(double decision_value, double A, double B)
+static float sigmoid_predict(float decision_value, float A, float B)
 {
-	double fApB = decision_value*A+B;
+	float fApB = decision_value*A+B;
 	// 1-p used later; avoid catastrophic cancellation
 	if (fApB >= 0)
-		return exp(-fApB)/(1.0+exp(-fApB));
+		return expf(-fApB)/(1.0+expf(-fApB));
 	else
-		return 1.0/(1+exp(fApB)) ;
+		return 1.0/(1+expf(fApB)) ;
 }
 
-double linear_kernel(const float *xi, const float *x, const Model *model)
+static float linear_kernel(const float *xi, const float *x, const @{prefix}Model *model)
 {
-    double sum = 0.f;
+    float sum = 0.f;
     int i = 0;
     int len = model->vec_dim;
     for (i = 0; i < len; i++)
@@ -56,12 +61,12 @@ double linear_kernel(const float *xi, const float *x, const Model *model)
     return sum;
 }
 
-double polynomial_kernel(const float *xi, const float *x, const Model *model)
+static float polynomial_kernel(const float *xi, const float *x, const @{prefix}Model *model)
 {
-    double sum = 0.f;
+    float sum = 0.f;
     int i = 0;
     int len = model->vec_dim;
-    double res = 0;
+    float res = 0;
 
     for (i = 0; i < len; i++)
     {
@@ -72,13 +77,13 @@ double polynomial_kernel(const float *xi, const float *x, const Model *model)
     return res * res;
 }
 
-double rbf_kernel(const float *xi, const float *x, const Model *model)
+static float rbf_kernel(const float *xi, const float *x, const @{prefix}Model *model)
 {
-    double sum = 0.f;
+    float sum = 0.f;
     int i = 0;
     int len = model->vec_dim;
-    double res = 0.;
-    double temp = 0.;
+    float res = 0.;
+    float temp = 0.;
     for (i = 0; i < len; i++)
     {
         temp = xi[i] - x[i];
@@ -89,7 +94,7 @@ double rbf_kernel(const float *xi, const float *x, const Model *model)
     return res;
 }
 
-void init_svm_params(Model *svm_model)
+void @{prefix}init_svm_params(@{prefix}Model *svm_model)
 {
     svm_model->kernel_type = @{kernel_type};
     svm_model->degree   = @{degree};
@@ -110,10 +115,10 @@ void init_svm_params(Model *svm_model)
 }
 
 
-double predict(const Model *svm_model, const float* x, int len)
+float @{prefix}predict(const @{prefix}Model *svm_model, const float* x, int len)
 {
     int i = 0;
-    double sum = 0.f;
+    float sum = 0.f;
     KernelHandle kernel;
     if (len != svm_model->vec_dim)
     {
@@ -144,13 +149,13 @@ double predict(const Model *svm_model, const float* x, int len)
     return sum-svm_model->rhos[0];
 }
 
-double predict_probability(const Model *svm_model, const float* x, int len)
+float @{prefix}predict_probability(const @{prefix}Model *svm_model, const float* x, int len)
 {
-    double score = predict(svm_model, x, len);
+    float score = @{prefix}predict(svm_model, x, len);
     return sigmoid_predict(score, svm_model->probA[0], svm_model->probB[0]);
 }
 
-static int32_t svm_predict_values(const Model *svm_model, const float *x, double* dec_values)
+static int32_t svm_predict_values(const @{prefix}Model *svm_model, const float *x, float* dec_values)
 {
     int i = 0;
     int j = 0;
@@ -162,6 +167,12 @@ static int32_t svm_predict_values(const Model *svm_model, const float *x, double
     {
     case KERNEL_LINEAR:
         kernel = linear_kernel;
+        break;
+    case KERNEL_POLYNOMIAL:
+        kernel = polynomial_kernel;
+        break;
+    case KERNEL_RBF:
+        kernel = rbf_kernel;
         break;
     default:
         return -1;
@@ -222,13 +233,13 @@ static int32_t svm_predict_values(const Model *svm_model, const float *x, double
 }
 
 // Method 2 from the multiclass_prob paper by Wu, Lin, and Weng
-static void multiclass_probability(int k, double (*r)[NR_CLASS], double *p)
+static void multiclass_probability(int k, float (*r)[NR_CLASS], float *p)
 {
     int t,j;
     int iter = 0, max_iter=MAX(100,k);
-    double Q[k][k];
-    double Qp[k];
-    double pQp, eps=0.005/k;
+    float Q[k][k];
+    float Qp[k];
+    float pQp, eps=0.005/k;
 
     for (t = 0; t < k; t++)
     {
@@ -256,10 +267,10 @@ static void multiclass_probability(int k, double (*r)[NR_CLASS], double *p)
                 Qp[t] += Q[t][j]*p[j];
             pQp += p[t]*Qp[t];
         }
-        double max_error=0;
+        float max_error=0;
         for (t = 0; t < k; t++)
         {
-            double error = fabs(Qp[t]-pQp);
+            float error = fabsf(Qp[t]-pQp);
             if (error > max_error)
                 max_error = error;
         }
@@ -267,7 +278,7 @@ static void multiclass_probability(int k, double (*r)[NR_CLASS], double *p)
 
         for (t = 0; t < k; t++)
         {
-            double diff = (-Qp[t] + pQp) / Q[t][t];
+            float diff = (-Qp[t] + pQp) / Q[t][t];
             p[t] += diff;
             pQp = (pQp + diff * (diff*Q[t][t] + 2*Qp[t])) / (1 + diff) / (1 + diff);
             for (j = 0; j < k; j++)
@@ -285,14 +296,20 @@ static void multiclass_probability(int k, double (*r)[NR_CLASS], double *p)
     }
 }
 
-int32_t multi_predict_probability(const Model *svm_model, const float* x, int len, float* scores_buf, int scores_buf_len)
+int32_t @{prefix}multi_predict(const @{prefix}Model* svm_model, const float* x, int len) {
+    float dec_values[NR_CLASSIFER(NR_CLASS)];
+    int label = svm_predict_values(svm_model, x, dec_values);
+    return label;
+}
+
+int32_t @{prefix}multi_predict_probability(const @{prefix}Model *svm_model, const float* x, int len, float* scores_buf, int scores_buf_len)
 {
-    double dec_values[NR_CLASSIFER(NR_CLASS)];
+    float dec_values[NR_CLASSIFER(NR_CLASS)];
     int32_t res = svm_predict_values(svm_model, x, dec_values);
     if (res < 0) return res;
 
-    double min_prob=1e-7;
-    double pairwise_prob[NR_CLASS][NR_CLASS];
+    float min_prob=1e-7;
+    float pairwise_prob[NR_CLASS][NR_CLASS];
     int i, j;
     int k=0;
     for (i = 0; i < NR_CLASS; i++)
@@ -304,7 +321,7 @@ int32_t multi_predict_probability(const Model *svm_model, const float* x, int le
             k++;
         }
     }
-    double scores[NR_CLASS];
+    float scores[NR_CLASS];
 	multiclass_probability(NR_CLASS, pairwise_prob, scores);
 
     int prob_max_idx = 0;

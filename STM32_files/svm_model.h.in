@@ -1,5 +1,5 @@
-#ifndef __LIBSVM_MODEL_H__
-#define __LIBSVM_MODEL_H__
+#ifndef __@{prefix}LIBSVM_MODEL_H__
+#define __@{prefix}LIBSVM_MODEL_H__
 
 #include <stdint.h>
 #define FEATURE_SIZE @{vec_dim}
@@ -7,15 +7,8 @@
 #define TOTAL_SV @{total_sv}
 #define NR_CLASSIFER(nc) (nc*(nc-1)/2)
 
-typedef enum {
-    KERNEL_UNKNOWN = 0,
-    KERNEL_LINEAR, 
-    KERNEL_POLYNOMIAL,
-    KERNEL_RBF
-} KernelType;
-
 typedef struct {
-    KernelType kernel_type;
+    uint8_t kernel_type;
     //-- for polynomial kernel -->
     uint8_t degree;
     float gamma;
@@ -33,22 +26,32 @@ typedef struct {
     float* SVs;          /* SVs (SV[l]) */
     int32_t* nr_sv;      /* number of SVs for each class (nSV[k]) */
                          /* nSV[0] + nSV[1] + ... + nSV[k-1] = l */
-} Model;
+} @{prefix}Model;
 
 /** 
  *  init svm params, must be invoked before predict
  */
-void init_svm_params(Model *svm_model);
+void @{prefix}init_svm_params(@{prefix}Model *svm_model);
 
 /**
  * two-class only
  */
-double predict(const Model *svm_model, const float* x, int len);
+float @{prefix}predict(const @{prefix}Model *svm_model, const float* x, int len);
 
 /**
  * two-class only
  */
-double predict_probability(const Model *svm_model, const float* x, int len);
+float @{prefix}predict_probability(const @{prefix}Model *svm_model, const float* x, int len);
+
+/**
+ * @brief predict multiclasses
+ * 
+ * @param svm_model   SVM model
+ * @param x           input x feature
+ * @param len         x length
+ * @return int32_t    return label
+ */
+int32_t @{prefix}multi_predict(const @{prefix}Model* svm_model, const float* x, int len);
 
 /**
  * predict multi classes
@@ -58,7 +61,7 @@ double predict_probability(const Model *svm_model, const float* x, int len);
  * @param[out] scores_buf probability of each score
  * @param[in]  scores_buf_len  length of scores buf
  */
-int32_t multi_predict_probability(const Model *svm_model, const float* x, int len, float* scores_buf, int scores_buf_len);
+int32_t @{prefix}multi_predict_probability(const @{prefix}Model *svm_model, const float* x, int len, float* scores_buf, int scores_buf_len);
 
 
 #endif

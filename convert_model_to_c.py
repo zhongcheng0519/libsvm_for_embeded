@@ -4,30 +4,34 @@ import os
 from libsvm_model import Model
 
 
-def convert_model(model_path):
-    model = Model()
+def convert_model(model_path, prefix: str):
+    model = Model(prefix)
     model.load(model_path)
     if model.fprint_c('STM32_files/svm_model.c.in'):
-        print('Converting succeeded! {svm_model.c}')
+        print(f'Converting succeeded! "{prefix}svm_model.c"')
     else:
-        print('Converting failed! {svm_model.c}')
+        print(f'Converting failed! "{prefix}svm_model.c"')
     if model.fprint_c('STM32_files/svm_model.h.in'):
-        print('Converting succeeded! {svm_model.h}')
+        print(f'Converting succeeded! "{prefix}svm_model.h"')
     else:
-        print('Converting failed! {svm_model.h}')
+        print(f'Converting failed! "{prefix}svm_model.h"')
 
 
 def print_help():
-    print("Usage: ./convert_model_to_c.py [model_path]")
+    print("Usage: ./convert_model_to_c.py [model_path] [prefix]")
     print('\tmodel_path: path of model file, "fall.model" by default.')
 
 
 if __name__ == '__main__':
     model_path = 'test.model'
+    prefix = ""
     if len(sys.argv) == 1:
         pass
     elif len(sys.argv) == 2:
         model_path = sys.argv[1]
+    elif len(sys.argv) == 3:
+        model_path = sys.argv[1]
+        prefix = sys.argv[2]
     else:
         print_help()
         sys.exit(-1)
@@ -40,4 +44,4 @@ if __name__ == '__main__':
         print('model path does not exist, please recheck your params')
         sys.exit(-1)
 
-    convert_model(model_path)
+    convert_model(model_path, prefix)
